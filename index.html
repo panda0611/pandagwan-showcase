@@ -587,7 +587,14 @@
       font-family: var(--font-mono); font-size: 7px; letter-spacing: .1em; text-decoration: none;
       transition: color 180ms ease, border-color 180ms ease, background 180ms ease, transform 180ms ease;
     }
-    .footer-github::before { content: "//"; color: #4f6659; }
+    .footer-links { display: flex; justify-content: center; gap: 8px; }
+    .footer-wechat { cursor: pointer; }
+    .wechat-dialog { width: min(360px, calc(100vw - 40px)); max-height: calc(100dvh - 40px); padding: 18px; box-sizing: border-box; overflow: auto; border: 1px solid #34463b; border-radius: 12px; color: #eefafd; background: #111815; }
+    .wechat-dialog::backdrop { background: rgba(0,0,0,.8); }
+    .wechat-dialog header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+    .wechat-dialog h2 { margin: 0; font-size: 16px; }
+    .wechat-dialog button { border: 0; padding: 8px 12px; color: #eefafd; background: #26372d; border-radius: 4px; cursor: pointer; }
+    .wechat-dialog img { display: block; width: 100%; height: auto; border-radius: 6px; }
     .footer-github-id { color: #69756e; letter-spacing: .06em; }
     .footer-github-arrow { color: #88fda1; font-size: 10px; line-height: 1; }
     .footer-github:hover, .footer-github:focus-visible {
@@ -798,14 +805,27 @@
 
     <footer class="bottomline">
       <div class="footer-nav">AI PROJECTS <span>·</span> SMALL IDEAS, REAL WORLDS</div>
-      <a class="footer-github" href="https://github.com/panda0611" target="_blank" rel="noopener noreferrer" aria-label="访问 PANDAGWAN 的 GitHub 个人主页">
-        <span>GITHUB</span><span class="footer-github-id">github.com/panda0611</span><span class="footer-github-arrow" aria-hidden="true">↗</span>
-      </a>
+      <div class="footer-links">
+        <a class="footer-github" href="https://github.com/panda0611" target="_blank" rel="noopener noreferrer" aria-label="访问 PANDAGWAN 的 GitHub 个人主页">GITHUB</a>
+        <button class="footer-github footer-wechat" id="wechat-open" type="button" aria-haspopup="dialog" aria-controls="wechat-dialog">WECHAT</button>
+      </div>
     </footer>
     <span class="edition" aria-hidden="true">PROJECT ARCHIVE / 01—09</span>
   </div>
 
+  <dialog class="wechat-dialog" id="wechat-dialog" aria-labelledby="wechat-title">
+    <header><h2 id="wechat-title">扫码添加微信</h2><button id="wechat-close" type="button" aria-label="关闭微信二维码">关闭 ×</button></header>
+    <img src="pandagwan-assets/wechat-qr.jpeg" alt="蒲月拾期的微信好友二维码" />
+  </dialog>
   <script>
+    const wechatDialog = document.getElementById("wechat-dialog");
+    document.getElementById("wechat-open").addEventListener("click", () => wechatDialog.showModal());
+    document.getElementById("wechat-close").addEventListener("click", () => wechatDialog.close());
+    wechatDialog.addEventListener("click", (event) => {
+      if (event.target !== wechatDialog) return;
+      const rect = wechatDialog.getBoundingClientRect();
+      if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) wechatDialog.close();
+    });
     const projects = [
       {
         id: "mc",
@@ -1125,6 +1145,7 @@
       if (selectedId && !event.target.closest(".project, .hud")) clearSelection();
     });
     document.addEventListener("keydown", (event) => {
+      if (wechatDialog.open) return;
       if (event.key === "Escape") { clearSelection(); return; }
       if (!["ArrowLeft", "ArrowRight"].includes(event.key)) return;
       if (event.target instanceof HTMLAnchorElement) return;
