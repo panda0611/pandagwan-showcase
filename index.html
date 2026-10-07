@@ -490,7 +490,7 @@
       transition: color 180ms ease, border-color 180ms ease, background 180ms ease;
     }
     .carousel-nav button:hover { color: #fff; border-color: rgba(136,253,161,.52); background: rgba(136,253,161,.07); }
-    #carousel-count { min-width: 48px; text-align: center; }
+    #carousel-count { display: grid; place-items: center; min-width: 104px; line-height: 1; text-align: center; }
     footer.bottomline { bottom: 19px; gap: 5px; }
     .footer-brand { font-size: 10px; }
     .footer-nav { color: #41494b; }
@@ -784,7 +784,7 @@
 
     <nav class="carousel-nav" aria-label="切换项目">
       <button type="button" id="previous-project" aria-label="上一个项目">‹</button>
-      <span id="carousel-count" aria-live="polite">— / 09</span>
+      <span id="carousel-count">PANDAGWAN</span>
       <button type="button" id="next-project" aria-label="下一个项目">›</button>
     </nav>
 
@@ -969,7 +969,6 @@
     const projectGrid = document.querySelector(".project-grid");
     const workspace = document.querySelector(".workspace");
     const hud = document.querySelector(".hud");
-    const carouselCount = document.getElementById("carousel-count");
     let selectedId = null;
 
     const iconAssets = {
@@ -1054,7 +1053,6 @@
       workspace.removeAttribute("data-selected");
       buttons.forEach((button) => button.setAttribute("aria-pressed", "false"));
       hud.setAttribute("aria-hidden", "true");
-      carouselCount.textContent = "— / " + totalProjects;
       positionCarousel();
     }
 
@@ -1065,7 +1063,6 @@
       workspace.dataset.selected = id;
       buttons.forEach((button) => button.setAttribute("aria-pressed", String(button.dataset.project === id)));
       hud.setAttribute("aria-hidden", "false");
-      carouselCount.textContent = item.number + " / " + totalProjects;
       positionCarousel();
       hudMain.classList.remove("is-changing");
       void hudMain.offsetWidth;
