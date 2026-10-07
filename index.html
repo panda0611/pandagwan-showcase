@@ -1,0 +1,1178 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#070808" />
+  <meta name="description" content="PANDAGWAN 项目展厅：AI、Agent 与数字创作项目档案。" />
+  <title>PANDAGWAN — 项目展厅</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #080909;
+      --panel: #101313;
+      --panel-soft: #141818;
+      --line: rgba(232, 241, 232, .11);
+      --line-hot: rgba(207, 255, 127, .42);
+      --text: #eef2ec;
+      --muted: #87928b;
+      --subtle: #59635e;
+      --lime: #d6ff83;
+      --aqua: #8be7dc;
+      --ease: cubic-bezier(.2, .75, .25, 1);
+      --font-ui: "Avenir Next", Avenir, "Segoe UI", "Microsoft YaHei", sans-serif;
+      --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    html { min-width: 320px; min-height: 100%; background: var(--bg); }
+    body {
+      min-width: 320px;
+      min-height: 100vh;
+      margin: 0;
+      color: var(--text);
+      background:
+        radial-gradient(ellipse at 18% 10%, rgba(91, 119, 92, .12), transparent 34rem),
+        radial-gradient(ellipse at 89% 89%, rgba(113, 90, 144, .09), transparent 34rem),
+        var(--bg);
+      font-family: var(--font-ui);
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+    button, a { font: inherit; }
+    button:focus-visible, a:focus-visible { outline: 2px solid var(--lime); outline-offset: 4px; }
+    a { color: inherit; }
+
+    .shell {
+      position: relative;
+      width: min(1440px, 100%);
+      min-height: 100vh;
+      min-height: 100svh;
+      margin: 0 auto;
+      padding: 38px clamp(22px, 4.3vw, 68px) 26px;
+      overflow: hidden;
+      isolation: isolate;
+    }
+    .shell::before {
+      position: absolute;
+      z-index: -1;
+      inset: 0;
+      content: "";
+      opacity: .12;
+      pointer-events: none;
+      background-image: radial-gradient(rgba(222, 235, 222, .48) .55px, transparent .7px);
+      background-size: 5px 5px;
+      mask-image: linear-gradient(135deg, #000, transparent 55%);
+    }
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--line);
+    }
+    .identity { display: flex; align-items: center; gap: 12px; }
+    .brand-mark {
+      display: grid;
+      width: 36px;
+      height: 36px;
+      place-items: center;
+      border: 1px solid rgba(214, 255, 131, .42);
+      border-radius: 50%;
+      color: var(--lime);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: -.1em;
+      text-indent: -.1em;
+      box-shadow: inset 0 0 18px rgba(214, 255, 131, .06);
+    }
+    .brand-copy { display: grid; gap: 3px; }
+    .brand-name { margin: 0; font-family: var(--font-mono); font-size: 11px; letter-spacing: .2em; }
+    .brand-note { color: var(--muted); font-family: var(--font-mono); font-size: 9px; letter-spacing: .11em; }
+    .top-status { display: flex; align-items: center; gap: 10px; color: var(--muted); font-family: var(--font-mono); font-size: 9px; letter-spacing: .13em; }
+    .status-light { width: 7px; height: 7px; border-radius: 50%; background: var(--lime); box-shadow: 0 0 11px rgba(214, 255, 131, .76); }
+
+    .intro {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 26px;
+      padding: 34px 0 27px;
+    }
+    .eyebrow, .micro-label { margin: 0; color: var(--lime); font-family: var(--font-mono); font-size: 9px; letter-spacing: .18em; text-transform: uppercase; }
+    .intro h1 { margin: 9px 0 0; font-size: clamp(26px, 4vw, 45px); font-weight: 520; letter-spacing: -.055em; line-height: 1.05; }
+    .intro-copy { max-width: 390px; margin: 0; color: var(--muted); font-size: 12px; line-height: 1.8; }
+    .intro-copy b { color: var(--text); font-weight: 500; }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: minmax(0, 1.08fr) minmax(370px, .92fr);
+      gap: clamp(17px, 2.1vw, 30px);
+      align-items: stretch;
+    }
+    .catalog {
+      min-width: 0;
+      padding: clamp(16px, 2.1vw, 27px);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: linear-gradient(145deg, rgba(20, 24, 23, .93), rgba(12, 14, 14, .95));
+      box-shadow: 0 22px 70px rgba(0, 0, 0, .2);
+    }
+    .section-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 20px; }
+    .section-head h2 { margin: 0; color: var(--muted); font-family: var(--font-mono); font-size: 9px; font-weight: 500; letter-spacing: .17em; }
+    .section-head span { color: var(--subtle); font-family: var(--font-mono); font-size: 9px; letter-spacing: .08em; }
+    .project-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+    .project {
+      --tone: #c5f27b;
+      position: relative;
+      display: grid;
+      min-width: 0;
+      min-height: 142px;
+      align-content: space-between;
+      justify-items: start;
+      padding: 12px 10px 11px;
+      border: 1px solid rgba(235, 244, 235, .085);
+      border-radius: 12px;
+      color: var(--text);
+      text-align: left;
+      background: rgba(255, 255, 255, .018);
+      cursor: pointer;
+      transition: border-color 260ms ease, background 260ms ease, transform 340ms var(--ease), box-shadow 300ms ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .project:hover { z-index: 1; transform: translateY(-3px); border-color: color-mix(in srgb, var(--tone) 43%, transparent); background: rgba(255, 255, 255, .04); }
+    .project[aria-pressed="true"] {
+      border-color: color-mix(in srgb, var(--tone) 65%, transparent);
+      background: linear-gradient(150deg, color-mix(in srgb, var(--tone) 11%, #111), rgba(255, 255, 255, .025));
+      box-shadow: inset 0 0 24px color-mix(in srgb, var(--tone) 7%, transparent), 0 0 20px color-mix(in srgb, var(--tone) 6%, transparent);
+    }
+    .project-top { display: flex; width: 100%; align-items: center; justify-content: space-between; color: var(--subtle); font-family: var(--font-mono); font-size: 8px; }
+    .project-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--tone); opacity: .75; }
+    .project[aria-pressed="true"] .project-dot { opacity: 1; box-shadow: 0 0 10px var(--tone); }
+    .icon-wrap { display: grid; width: 62px; height: 62px; place-items: center; margin: 4px auto 4px; justify-self: center; color: var(--tone); }
+    .project svg { width: 100%; height: 100%; overflow: visible; filter: drop-shadow(0 7px 13px rgba(0,0,0,.28)); transition: transform 350ms var(--ease); }
+    .project:hover svg, .project[aria-pressed="true"] svg { transform: translateY(-2px) rotate(-3deg) scale(1.06); }
+    .project-name { display: block; width: 100%; overflow: hidden; color: #e8ece7; font-size: 10px; font-weight: 520; letter-spacing: .01em; text-overflow: ellipsis; white-space: nowrap; }
+    .project-kind { display: block; margin-top: 4px; color: var(--subtle); font-family: var(--font-mono); font-size: 7px; letter-spacing: .09em; text-transform: uppercase; }
+
+    .catalog-foot {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      margin-top: 17px;
+      padding-top: 13px;
+      border-top: 1px solid var(--line);
+      color: var(--subtle);
+      font-family: var(--font-mono);
+      font-size: 8px;
+      letter-spacing: .08em;
+      line-height: 1.6;
+    }
+    .catalog-foot strong { color: var(--muted); font-weight: 500; }
+
+    .hud {
+      position: relative;
+      display: flex;
+      min-width: 0;
+      min-height: 100%;
+      flex-direction: column;
+      padding: clamp(20px, 2.6vw, 34px);
+      overflow: hidden;
+      border: 1px solid rgba(214, 255, 131, .17);
+      border-radius: 18px;
+      background:
+        radial-gradient(ellipse at 100% 0%, rgba(214, 255, 131, .09), transparent 18rem),
+        linear-gradient(155deg, #151a18, #0d1010 65%);
+      box-shadow: 0 20px 65px rgba(0, 0, 0, .3);
+    }
+    .hud::after {
+      position: absolute;
+      top: 0;
+      right: 27px;
+      width: 1px;
+      height: 56px;
+      content: "";
+      background: linear-gradient(var(--lime), transparent);
+      opacity: .66;
+    }
+    .hud-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-bottom: 15px; border-bottom: 1px solid var(--line); }
+    .hud-code { color: var(--muted); font-family: var(--font-mono); font-size: 9px; letter-spacing: .15em; }
+    .hud-state { display: inline-flex; align-items: center; gap: 7px; color: var(--lime); font-family: var(--font-mono); font-size: 8px; letter-spacing: .12em; white-space: nowrap; }
+    .hud-state::before { width: 5px; height: 5px; border-radius: 50%; content: ""; background: currentColor; box-shadow: 0 0 9px currentColor; }
+    .hud-main { flex: 1; padding-top: 28px; animation: hud-enter 460ms var(--ease) both; }
+    .hud-main.is-changing { animation: hud-enter 380ms var(--ease) both; }
+    .hud-kicker { margin: 0 0 10px; color: var(--aqua); font-family: var(--font-mono); font-size: 9px; letter-spacing: .16em; text-transform: uppercase; }
+    .hud-title { max-width: 15ch; margin: 0; font-size: clamp(25px, 3vw, 37px); font-weight: 520; letter-spacing: -.05em; line-height: 1.15; }
+    .hud-subtitle { margin: 9px 0 0; color: var(--muted); font-size: 12px; line-height: 1.6; }
+    .hud-description { max-width: 53ch; margin: 24px 0 0; color: #c2cbc4; font-size: 12px; line-height: 1.95; }
+    .hud-divider { display: flex; align-items: center; gap: 12px; margin: 26px 0 14px; color: var(--subtle); font-family: var(--font-mono); font-size: 8px; letter-spacing: .16em; }
+    .hud-divider::after { height: 1px; flex: 1; content: ""; background: var(--line); }
+    .hud-tags { display: flex; flex-wrap: wrap; gap: 7px; }
+    .hud-tag { padding: 6px 9px; border: 1px solid rgba(231, 243, 231, .11); border-radius: 999px; color: #aab7ad; font-family: var(--font-mono); font-size: 8px; letter-spacing: .03em; }
+    .hud-note { display: flex; gap: 10px; margin-top: 23px; padding: 12px 13px; border-left: 2px solid var(--lime); background: rgba(214, 255, 131, .045); color: var(--muted); font-size: 10px; line-height: 1.7; }
+    .hud-note-mark { color: var(--lime); font-family: var(--font-mono); }
+    .hud-actions { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-top: 30px; padding-top: 18px; border-top: 1px solid var(--line); }
+    .entry-link, .entry-empty {
+      display: inline-flex;
+      min-height: 43px;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      padding: 0 16px;
+      border: 1px solid rgba(214, 255, 131, .36);
+      border-radius: 7px;
+      color: var(--lime);
+      font-size: 10px;
+      font-weight: 560;
+      letter-spacing: .04em;
+      text-decoration: none;
+      background: rgba(214, 255, 131, .07);
+      transition: background 200ms ease, transform 240ms var(--ease), border-color 200ms ease;
+    }
+    .entry-link:hover { transform: translateY(-2px); border-color: var(--lime); background: rgba(214, 255, 131, .13); }
+    .entry-link span { font-family: var(--font-mono); font-size: 14px; }
+    .entry-empty { border-color: var(--line); color: var(--subtle); background: rgba(255,255,255,.02); cursor: not-allowed; }
+    .entry-hint { max-width: 120px; color: var(--subtle); font-family: var(--font-mono); font-size: 8px; letter-spacing: .06em; line-height: 1.6; text-align: right; }
+    .hud-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; margin-top: 15px; }
+    .meta-cell { min-width: 0; padding: 10px 11px; border: 1px solid rgba(231,243,231,.07); border-radius: 7px; background: rgba(255,255,255,.018); }
+    .meta-label { display: block; margin-bottom: 5px; color: var(--subtle); font-family: var(--font-mono); font-size: 7px; letter-spacing: .13em; }
+    .meta-value { display: block; overflow: hidden; color: #d1d9d1; font-size: 9px; text-overflow: ellipsis; white-space: nowrap; }
+    .bottomline { display: flex; justify-content: space-between; gap: 16px; margin-top: 20px; padding-top: 16px; color: var(--subtle); font-family: var(--font-mono); font-size: 8px; letter-spacing: .12em; }
+    .bottomline b { color: var(--muted); font-weight: 500; }
+    .scanline { position: absolute; z-index: -1; top: -35%; left: -10%; width: 120%; height: 1px; background: linear-gradient(90deg, transparent, rgba(214,255,131,.24), transparent); opacity: .48; animation: scan 10s linear infinite; pointer-events: none; }
+
+    @keyframes hud-enter { from { opacity: 0; transform: translateY(9px); filter: blur(3px); } to { opacity: 1; transform: translateY(0); filter: blur(0); } }
+    @keyframes scan { to { transform: translateY(170vh); } }
+    @media (max-width: 920px) {
+      .workspace { grid-template-columns: minmax(0, 1fr) minmax(315px, .9fr); }
+      .project-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+      .project { min-height: 126px; padding: 10px 8px; }
+      .icon-wrap { width: 54px; height: 54px; }
+    }
+    @media (max-width: 760px) {
+      .shell { padding: 22px 16px 20px; }
+      .topbar { padding-bottom: 17px; }
+      .intro { align-items: start; flex-direction: column; gap: 11px; padding: 25px 2px 20px; }
+      .intro-copy { max-width: 52ch; }
+      .workspace { grid-template-columns: 1fr; gap: 14px; }
+      .catalog { padding: 17px; }
+      .project { min-height: 125px; }
+      .hud { min-height: 480px; padding: 23px; }
+      .hud-main { padding-top: 23px; }
+      .hud-title { max-width: 22ch; }
+      .hud-description { margin-top: 19px; }
+      .bottomline { margin-top: 15px; }
+    }
+    @media (max-width: 440px) {
+      .shell { padding-inline: 12px; }
+      .top-status { font-size: 7px; gap: 7px; }
+      .brand-mark { width: 32px; height: 32px; }
+      .brand-name { font-size: 10px; }
+      .brand-note { font-size: 7px; }
+      .project-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+      .project { min-height: 118px; padding: 10px 11px; }
+      .icon-wrap { width: 58px; height: 58px; }
+      .catalog-foot { font-size: 7px; }
+      .hud { min-height: 520px; padding: 19px; }
+      .hud-title { font-size: 30px; }
+      .hud-actions { align-items: flex-start; flex-direction: column; }
+      .entry-hint { max-width: none; text-align: left; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
+
+    /* Keep the original Avara-inspired black stage and compact character cluster. */
+    body { background: #000; }
+    .shell { width: 100%; max-width: none; min-height: 100vh; min-height: 100svh; padding: 0 clamp(18px, 4vw, 54px); }
+    .shell::before, .scanline { display: none; }
+    .topbar { position: absolute; z-index: 3; top: 24px; right: 28px; left: 28px; display: flex; padding: 0; border: 0; pointer-events: none; }
+    .identity { display: none; }
+    .top-status { margin-left: auto; color: #52585a; font-size: 8px; letter-spacing: .15em; }
+    .status-light { width: 5px; height: 5px; background: #88fda1; box-shadow: 0 0 8px rgba(136,253,161,.65); }
+    .intro { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+    .workspace { width: min(1120px, 100%); min-height: 100vh; min-height: 100svh; margin: 0 auto; grid-template-columns: minmax(0, 1.22fr) minmax(320px, .78fr); gap: clamp(26px, 5vw, 72px); align-items: center; }
+    .catalog { padding: 0; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
+    .section-head { margin: 0 0 8px; padding-left: 8px; }
+    .section-head h2 { color: #464e50; font-size: 8px; letter-spacing: .18em; }
+    .section-head > span { color: #384043; font-size: 8px; }
+    .project-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px 7px; }
+    .project {
+      position: relative; min-height: 150px; align-content: center; justify-items: center; gap: 4px;
+      padding: 9px 5px 7px; border: 0; border-radius: 0; background: transparent; text-align: center;
+      transform: translateY(0); box-shadow: none;
+    }
+    .project:hover { transform: translateY(-5px); border: 0; background: transparent; box-shadow: none; }
+    .project[aria-pressed="true"] { border: 0; background: transparent; box-shadow: none; }
+    .project-top { position: absolute; top: 3px; right: 8px; width: auto; justify-content: flex-end; gap: 5px; font-size: 7px; opacity: .42; }
+    .project-dot { width: 4px; height: 4px; }
+    .icon-wrap {
+      width: clamp(70px, 7.2vw, 92px); height: clamp(70px, 7.2vw, 92px); margin: 3px 0 5px;
+      border: 1px solid transparent; border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,255,255,.075), rgba(255,255,255,.012) 68%, transparent 70%);
+      transition: border-color 260ms ease, box-shadow 300ms ease, background 280ms ease;
+    }
+    .project:nth-child(1) .icon-wrap, .project:nth-child(2) .icon-wrap, .project:nth-child(3) .icon-wrap { animation: cluster-float 6.2s ease-in-out infinite; }
+    .project:nth-child(2) .icon-wrap { animation-delay: -2.1s; }
+    .project:nth-child(3) .icon-wrap { animation-delay: -4s; }
+    .project[aria-pressed="true"] .icon-wrap {
+      border-color: color-mix(in srgb, var(--tone) 45%, transparent);
+      background: radial-gradient(circle, color-mix(in srgb, var(--tone) 13%, transparent), rgba(255,255,255,.015) 69%, transparent 71%);
+      box-shadow: 0 0 32px color-mix(in srgb, var(--tone) 15%, transparent);
+    }
+    .project svg { width: 84%; height: 84%; filter: drop-shadow(0 5px 13px rgba(0,0,0,.4)); }
+    .project-name { color: #cfd5d0; font-size: 9px; font-weight: 500; letter-spacing: .015em; text-align: center; }
+    .project-kind { display: none; }
+    .catalog-foot { margin: 8px 0 0; padding: 0 8px; border: 0; color: #3b4345; font-size: 7px; }
+    .catalog-foot strong { color: #66716c; }
+    .hud {
+      min-height: 470px; padding: 22px 0 17px clamp(22px, 3vw, 42px); overflow: visible;
+      border: 0; border-left: 1px solid rgba(238,250,253,.1); border-radius: 0; background: transparent; box-shadow: none;
+    }
+    .hud::after { top: 16px; right: auto; left: -1px; width: 2px; height: 54px; background: linear-gradient(#88fda1, transparent); opacity: .75; }
+    .hud-header { padding-bottom: 13px; border-color: rgba(238,250,253,.08); }
+    .hud-code { color: #697274; font-size: 8px; letter-spacing: .18em; }
+    .hud-state { color: #88fda1; font-size: 7px; }
+    .hud-main { padding-top: 24px; }
+    .hud-kicker { color: #88fda1; font-size: 8px; }
+    .hud-title { max-width: 18ch; font-size: clamp(26px, 3vw, 36px); letter-spacing: -.045em; }
+    .hud-subtitle { color: #87918c; font-size: 11px; }
+    .hud-description { max-width: 42ch; margin-top: 20px; color: #bbc4be; font-size: 11px; line-height: 1.9; }
+    .hud-divider { margin: 21px 0 11px; color: #55605a; font-size: 7px; }
+    .hud-tag { border-color: rgba(238,250,253,.13); color: #8c9991; font-size: 7px; }
+    .hud-note { margin-top: 19px; padding: 9px 11px; border-left-color: #88fda1; background: rgba(136,253,161,.035); color: #7e8981; font-size: 9px; }
+    .hud-note-mark { color: #88fda1; }
+    .hud-actions { margin-top: 22px; padding-top: 15px; border-color: rgba(238,250,253,.08); }
+    .entry-link { min-height: 30px; padding: 0 0 5px; border: 0; border-bottom: 1px solid rgba(136,253,161,.4); border-radius: 0; color: #88fda1; font-size: 9px; background: transparent; }
+    .entry-link:hover { transform: translateX(3px); border-color: #88fda1; background: transparent; }
+    .entry-empty { min-height: 30px; padding: 0; border: 0; border-radius: 0; background: transparent; font-size: 9px; }
+    .entry-hint { color: #58615d; font-size: 7px; }
+    .hud-meta { gap: 8px; margin-top: 12px; }
+    .meta-cell { padding: 9px 0 0; border: 0; border-top: 1px solid rgba(238,250,253,.075); border-radius: 0; background: transparent; }
+    .meta-label { color: #56605b; font-size: 7px; }
+    .meta-value { color: #aeb9b1; font-size: 8px; }
+    .hud > .bottomline { margin-top: 17px; padding-top: 0; color: #444c4e; border: 0; font-size: 7px; }
+    footer.bottomline {
+      position: absolute; right: 0; bottom: 21px; left: 0; display: grid; width: 100%; grid-template-columns: 1fr; justify-items: center; gap: 7px;
+      margin: 0; padding: 0; color: #eefafd; font-size: 12px; letter-spacing: .28em; pointer-events: none;
+    }
+    .footer-brand { margin: 0; color: #eefafd; font-family: var(--font-mono); font-size: 12px; font-weight: 650; letter-spacing: .28em; text-indent: .28em; }
+    .footer-nav { color: #42494d; font-family: var(--font-ui); font-size: 7px; letter-spacing: .12em; }
+    .footer-nav span { margin: 0 5px; color: #283033; }
+    .edition { position: absolute; right: 28px; bottom: 27px; color: #343b3e; font-family: var(--font-mono); font-size: 7px; letter-spacing: .12em; }
+    .sound-toggle { position: absolute; z-index: 4; top: 23px; left: 25px; display: grid; width: 28px; height: 28px; place-items: center; padding: 0; border: 0; color: #7f898c; background: transparent; cursor: pointer; }
+    .sound-toggle svg { width: 15px; height: 15px; }
+    .sound-toggle:hover, .sound-toggle[aria-pressed="true"] { color: #eefafd; }
+    .sound-waves { opacity: 0; transition: opacity 180ms ease; }
+    .sound-toggle[aria-pressed="true"] .sound-waves { opacity: 1; }
+    .sound-toggle[aria-pressed="true"] .sound-slash { opacity: 0; }
+    @keyframes cluster-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+    @media (max-width: 980px) {
+      .workspace { width: min(760px, 100%); min-height: auto; grid-template-columns: 1fr; gap: 13px; padding: 100px 0 98px; }
+      .project-grid { max-width: 620px; margin: 0 auto; }
+      .hud { min-height: auto; padding: 18px 0 10px 21px; }
+      .hud-main { padding-top: 19px; }
+      footer.bottomline { bottom: 16px; }
+      .edition { bottom: 22px; }
+    }
+    @media (max-width: 540px) {
+      .shell { padding: 0 15px; }
+      .topbar { top: 18px; right: 16px; left: 16px; }
+      .top-status { font-size: 7px; }
+      .sound-toggle { top: 13px; left: 10px; }
+      .workspace { padding: 76px 0 100px; }
+      .section-head { padding-left: 4px; }
+      .project-grid { gap: 4px 3px; }
+      .project { min-height: 124px; padding: 5px 2px; }
+      .project-top { top: 0; right: 4px; font-size: 6px; }
+      .icon-wrap { width: 66px; height: 66px; }
+      .project-name { font-size: 8px; }
+      .catalog-foot { font-size: 6px; }
+      .hud { min-height: 390px; padding-left: 15px; }
+      .hud-title { font-size: 29px; }
+      .hud-description { font-size: 10px; }
+      .hud-actions { align-items: center; flex-direction: row; }
+      .entry-hint { max-width: 120px; text-align: right; }
+      footer.bottomline { bottom: 16px; }
+      .footer-brand { font-size: 10px; }
+      .edition { display: none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .project:nth-child(1) .icon-wrap, .project:nth-child(2) .icon-wrap, .project:nth-child(3) .icon-wrap { animation: none; }
+    }
+
+    /* Interaction pass based on the user's Avara screen recording. */
+    .shell { max-width: none; min-height: 100svh; padding: 0; overflow: hidden; }
+    .topbar { top: 25px; right: clamp(18px, 3vw, 54px); left: clamp(18px, 3vw, 54px); }
+    .top-status { color: #596063; }
+    .workspace { position: relative; display: block; width: 100%; height: 100svh; min-height: 620px; margin: 0; padding: 0; overflow: hidden; }
+    .catalog { position: absolute; inset: 0; display: grid; place-items: center; min-width: 0; padding: 0; overflow: visible; }
+    .section-head, .catalog-foot { display: none; }
+    .project-grid { position: relative; display: flex; width: min(1680px, 100%); max-width: none; height: 100%; align-items: center; justify-content: center; gap: clamp(12px, 2.8vw, 48px); margin: 0 auto; overflow: visible; }
+    .project {
+      display: grid; flex: 0 0 clamp(78px, 7.2vw, 126px); width: clamp(78px, 7.2vw, 126px); min-height: 146px; height: 146px;
+      align-content: center; justify-items: center; gap: 0; padding: 0; overflow: visible; border: 0; border-radius: 0;
+      background: transparent; text-align: center; transform: none; opacity: 1;
+      transition: transform 720ms cubic-bezier(.2,.75,.25,1), opacity 520ms ease, filter 520ms ease;
+    }
+    .project:hover, .project[aria-pressed="true"] { border: 0; background: transparent; box-shadow: none; }
+    .project-top { display: none; }
+    .icon-wrap {
+      display: grid; width: clamp(78px, 7.2vw, 130px); height: clamp(78px, 7.2vw, 130px); place-items: center; margin: 0;
+      border: 1px solid transparent; border-radius: 50%; background: radial-gradient(circle, color-mix(in srgb, var(--tone) 16%, transparent), rgba(255,255,255,.015) 67%, transparent 70%);
+      filter: drop-shadow(0 0 14px color-mix(in srgb, var(--tone) 20%, transparent));
+      transition: width 720ms cubic-bezier(.2,.75,.25,1), height 720ms cubic-bezier(.2,.75,.25,1), border-color 400ms ease, background 400ms ease, filter 500ms ease;
+    }
+    .project:nth-child(n) .icon-wrap { animation: cluster-float 6.2s ease-in-out infinite; }
+    .project:nth-child(2n) .icon-wrap { animation-delay: -2.1s; }
+    .project:nth-child(3n) .icon-wrap { animation-delay: -4s; }
+    .project svg { width: 83%; height: 83%; filter: drop-shadow(0 5px 15px rgba(0,0,0,.55)); transition: transform 500ms ease; }
+    .project:hover .icon-wrap, .project:focus-visible .icon-wrap { background: radial-gradient(circle, color-mix(in srgb, var(--tone) 25%, transparent), rgba(255,255,255,.025) 68%, transparent 72%); }
+    .project-name {
+      position: absolute; z-index: 2; bottom: calc(100% + 8px); left: 50%; width: max-content; max-width: 180px; padding: 8px 12px;
+      border: 1px solid rgba(255,255,255,.08); border-radius: 999px; color: #edf0e9; font-size: 11px; font-weight: 500;
+      text-align: center; background: #25252a; box-shadow: 0 8px 26px rgba(0,0,0,.28); opacity: 0; pointer-events: none;
+      transform: translate(-50%, 6px); transition: opacity 180ms ease, transform 180ms ease;
+    }
+    .project:hover .project-name, .project:focus-visible .project-name, .project[aria-pressed="true"] .project-name { opacity: 1; transform: translate(-50%, 0); }
+    .project-kind { display: none; }
+    .project-grid.is-selected { position: absolute; inset: 0; width: 100%; height: 100%; }
+    .project-grid.is-selected .project {
+      position: absolute; top: 50%; left: 50%; flex: none; width: 112px; height: 142px; min-height: 142px;
+      transform: translate(calc(-50% + var(--slot-x, 0px)), -50%) scale(var(--slot-scale, .5));
+      opacity: var(--slot-opacity, .18); filter: saturate(.74); z-index: 1;
+    }
+    .project-grid.is-selected .project[aria-pressed="true"] { z-index: 2; opacity: 1; filter: none; }
+    .project-grid.is-selected .project[aria-pressed="true"] .icon-wrap {
+      width: clamp(300px, 31vw, 470px); height: clamp(300px, 31vw, 470px); border-color: color-mix(in srgb, var(--tone) 24%, transparent);
+      background: radial-gradient(circle, color-mix(in srgb, var(--tone) 17%, transparent), color-mix(in srgb, var(--tone) 4%, transparent) 55%, transparent 72%);
+      filter: drop-shadow(0 0 46px color-mix(in srgb, var(--tone) 22%, transparent));
+    }
+    .project-grid.is-selected .project[aria-pressed="true"] .project-name { top: calc(50% - clamp(190px, 17vw, 270px)); bottom: auto; }
+    .project-grid.is-selected .project[aria-pressed="true"] svg { transform: scale(1.02); }
+    .hud {
+      position: absolute; z-index: 4; top: 50%; right: clamp(22px, 6vw, 112px); width: min(430px, 34vw); min-height: 0; max-height: min(78svh, 760px);
+      padding: 21px 0 16px 25px; overflow: auto; border: 0; border-left: 1px solid rgba(238,250,253,.13); border-radius: 0;
+      background: linear-gradient(90deg, rgba(0,0,0,.12), rgba(0,0,0,.76) 16%, rgba(0,0,0,.76)); box-shadow: none; backdrop-filter: blur(13px);
+      opacity: 1; transform: translateY(-50%); transition: opacity 420ms ease, transform 520ms cubic-bezier(.2,.75,.25,1), visibility 420ms;
+    }
+    .hud[aria-hidden="true"] { visibility: hidden; opacity: 0; pointer-events: none; transform: translate(18px, -50%); }
+    .hud::after { top: 16px; right: auto; left: -1px; width: 2px; height: 54px; background: linear-gradient(#88fda1, transparent); opacity: .75; }
+    .hud-header { padding-bottom: 13px; border-color: rgba(238,250,253,.1); }
+    .hud-code { color: #737d7f; font-size: 8px; }
+    .hud-state { color: #88fda1; font-size: 7px; }
+    .hud-main { padding-top: 24px; }
+    .hud-kicker { color: #88fda1; font-size: 8px; }
+    .hud-title { font-size: clamp(27px, 2.5vw, 38px); }
+    .hud-subtitle { color: #929c97; font-size: 11px; }
+    .hud-description { max-width: 42ch; margin-top: 20px; color: #c0c8c1; font-size: 12px; line-height: 1.9; }
+    .hud-divider { margin: 21px 0 11px; color: #69736d; font-size: 7px; }
+    .hud-tag { border-color: rgba(238,250,253,.13); color: #aab4ac; font-size: 8px; }
+    .hud-note { margin-top: 17px; padding: 9px 11px; border-left-color: #88fda1; background: rgba(136,253,161,.035); color: #929c95; font-size: 9px; }
+    .hud-actions { margin-top: 20px; padding-top: 15px; border-color: rgba(238,250,253,.1); }
+    .entry-link { min-height: 30px; padding: 0 0 5px; border: 0; border-bottom: 1px solid rgba(136,253,161,.4); border-radius: 0; color: #88fda1; font-size: 9px; background: transparent; }
+    .entry-link:hover { transform: translateX(3px); border-color: #88fda1; background: transparent; }
+    .entry-empty { min-height: 30px; padding: 0; border: 0; border-radius: 0; background: transparent; font-size: 9px; }
+    .entry-hint { color: #69746e; font-size: 7px; }
+    .hud-meta { gap: 8px; margin-top: 12px; }
+    .meta-cell { padding: 9px 0 0; border: 0; border-top: 1px solid rgba(238,250,253,.08); border-radius: 0; background: transparent; }
+    .meta-label { color: #66716b; font-size: 7px; }
+    .meta-value { color: #b5c0b7; font-size: 8px; }
+    .hud > .bottomline { margin-top: 16px; padding-top: 0; color: #50595b; border: 0; font-size: 7px; }
+    .carousel-nav {
+      position: absolute; z-index: 5; bottom: 66px; left: 50%; display: flex; align-items: center; gap: 16px;
+      transform: translateX(-50%); color: #89918e; font-family: var(--font-mono); font-size: 10px; letter-spacing: .12em;
+    }
+    .carousel-nav button {
+      display: grid; width: 34px; height: 34px; place-items: center; border: 1px solid rgba(238,250,253,.12); border-radius: 50%;
+      color: #aab2ad; font-size: 19px; line-height: 1; background: rgba(255,255,255,.025); cursor: pointer;
+      transition: color 180ms ease, border-color 180ms ease, background 180ms ease;
+    }
+    .carousel-nav button:hover { color: #fff; border-color: rgba(136,253,161,.52); background: rgba(136,253,161,.07); }
+    #carousel-count { min-width: 48px; text-align: center; }
+    footer.bottomline { bottom: 19px; gap: 5px; }
+    .footer-brand { font-size: 10px; }
+    .footer-nav { color: #41494b; }
+    .edition { right: 28px; bottom: 27px; }
+    @media (min-width: 761px) and (max-width: 980px) {
+      .project-grid { gap: clamp(8px, 1.3vw, 12px); }
+      .project { flex-basis: 68px; width: 68px; }
+      .icon-wrap { width: 68px; height: 68px; }
+    }
+    @media (max-width: 760px) {
+      .topbar { top: 19px; right: 17px; left: 17px; }
+      .top-status { font-size: 7px; }
+      .sound-toggle { top: 13px; left: 10px; }
+      .workspace { width: 100%; height: 100svh; min-height: 620px; padding: 0; }
+      .project-grid { justify-content: flex-start; gap: 27px; width: 100%; padding: 0 calc(50vw - 39px); overflow-x: auto; overflow-y: visible; scroll-snap-type: x mandatory; scrollbar-width: none; }
+      .project-grid::-webkit-scrollbar { display: none; }
+      .project { flex-basis: 78px; width: 78px; scroll-snap-align: center; }
+      .icon-wrap { width: 72px; height: 72px; }
+      .project-grid.is-selected { overflow: visible; padding: 0; }
+      .project-grid.is-selected .project { top: 30%; left: 50%; }
+      .project-grid.is-selected .project:not([aria-pressed="true"]) { opacity: 0; pointer-events: none; }
+      .project-grid.is-selected .project[aria-pressed="true"] .icon-wrap { width: 190px; height: 190px; }
+      .project-grid.is-selected .project[aria-pressed="true"] .project-name { top: calc(50% - 119px); }
+      .hud { top: auto; right: 15px; bottom: 94px; left: 15px; width: auto; max-height: 39svh; padding: 16px 15px 15px 18px; border: 1px solid rgba(238,250,253,.1); border-left: 2px solid rgba(136,253,161,.55); background: rgba(5,7,7,.89); transform: none; }
+      .hud[aria-hidden="true"] { transform: translateY(12px); }
+      .hud-header { padding-bottom: 10px; }
+      .hud-main { padding-top: 15px; }
+      .hud-title { font-size: 27px; }
+      .hud-description { margin-top: 13px; font-size: 10px; }
+      .hud-divider { margin: 14px 0 9px; }
+      .hud-note { margin-top: 11px; }
+      .hud-actions { margin-top: 14px; padding-top: 10px; }
+      .hud-meta { margin-top: 10px; }
+      .carousel-nav { bottom: 51px; }
+      .carousel-nav button { width: 30px; height: 30px; }
+      footer.bottomline { bottom: 10px; }
+      .footer-brand { font-size: 8px; }
+      .footer-nav { font-size: 6px; }
+      .edition { display: none; }
+    }
+    @media (max-width: 390px) {
+      .project-grid { gap: 19px; padding-inline: calc(50vw - 35px); }
+      .project { flex-basis: 70px; width: 70px; }
+      .icon-wrap { width: 66px; height: 66px; }
+      .hud { bottom: 94px; max-height: 40svh; }
+      .hud-meta { grid-template-columns: 1fr; }
+      .carousel-nav { bottom: 49px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .project:nth-child(n) .icon-wrap { animation: none; }
+      .project, .icon-wrap, .project-name, .hud, .carousel-nav button { transition-duration: .01ms !important; }
+    }
+
+    /* Selected projects open into a quiet image frame; the icon remains the compact navigator. */
+    .project .icon-wrap > svg { display: none; }
+    .project .pixel-icon, .project .pixel-workflow {
+      display: block; width: 84%; height: 84%; object-fit: contain; pointer-events: none;
+      filter: drop-shadow(0 5px 15px rgba(0,0,0,.55)); transition: transform 500ms ease;
+    }
+    .project .pixel-workflow { display: block !important; }
+    .project-preview {
+      display: none; width: 100%; height: 100%; overflow: hidden; border-radius: inherit; background: #0b1010;
+    }
+    .project-preview img { display: block; width: 100%; height: 100%; object-fit: contain; object-position: center; }
+    .project-preview img[src*="project-workflow"] { object-position: 50% 0%; }
+    .project-preview img[src*="project-koala"], .project-preview img[src*="project-cat"], .project-preview img[src*="project-simbox"] { object-fit: contain; background: #0b1010; }
+    .project-grid.is-selected .project[aria-pressed="true"] .icon-wrap {
+      width: clamp(300px, 31vw, 470px); height: clamp(200px, 24vw, 340px); border-radius: 18px;
+      overflow: hidden; border-color: color-mix(in srgb, var(--tone) 30%, transparent);
+      background: #0b1010; filter: drop-shadow(0 0 46px color-mix(in srgb, var(--tone) 22%, transparent));
+    }
+    .project-grid.is-selected .project[aria-pressed="true"] .pixel-icon,
+    .project-grid.is-selected .project[aria-pressed="true"] .pixel-workflow { display: none; }
+    .project-grid.is-selected .project[aria-pressed="true"] .project-preview { display: block; }
+    .project-grid.is-selected .project[aria-pressed="true"] .project-name { top: calc(50% - clamp(150px, 14vw, 205px)); }
+    .project-grid.is-selected .project[aria-pressed="true"] .project-preview.is-empty { background: #0b1010; }
+    @media (max-width: 760px) {
+      .project-grid.is-selected .project[aria-pressed="true"] .icon-wrap { width: 190px; height: 140px; border-radius: 14px; }
+      .project-grid.is-selected .project[aria-pressed="true"] .project-name { top: calc(50% - 104px); }
+    }
+    footer.bottomline { gap: 8px; }
+    .footer-github {
+      pointer-events: auto; display: inline-flex; align-items: center; gap: 9px; min-height: 24px; padding: 0 9px;
+      border: 1px solid rgba(136,253,161,.16); border-radius: 2px; color: #88fda1; background: rgba(136,253,161,.025);
+      font-family: var(--font-mono); font-size: 7px; letter-spacing: .1em; text-decoration: none;
+      transition: color 180ms ease, border-color 180ms ease, background 180ms ease, transform 180ms ease;
+    }
+    .footer-github::before { content: "//"; color: #4f6659; }
+    .footer-github-id { color: #69756e; letter-spacing: .06em; }
+    .footer-github-arrow { color: #88fda1; font-size: 10px; line-height: 1; }
+    .footer-github:hover, .footer-github:focus-visible {
+      border-color: rgba(136,253,161,.6); color: #d8ffe1; background: rgba(136,253,161,.08); transform: translateY(-1px);
+    }
+    .footer-github:hover .footer-github-id, .footer-github:focus-visible .footer-github-id { color: #b7cfc0; }
+    @media (max-width: 760px) {
+      .footer-github { min-height: 22px; padding: 0 7px; font-size: 6px; gap: 6px; }
+      .footer-github-arrow { font-size: 9px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <button class="sound-toggle" id="sound-toggle" type="button" aria-label="打开环境音" aria-pressed="false" title="环境音：关闭">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M4 9.5v5h3.4l4.3 3.2V6.3L7.4 9.5H4Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+        <path class="sound-waves" d="M15 9a4.3 4.3 0 0 1 0 6m2.2-8.1a7.2 7.2 0 0 1 0 10.2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        <path class="sound-slash" d="m15.5 9.5 4.5 5m0-5-4.5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+    </button>
+    <div class="scanline" aria-hidden="true"></div>
+    <header class="topbar">
+      <div class="identity">
+        <div class="brand-mark" aria-hidden="true">P.</div>
+        <div class="brand-copy">
+          <p class="brand-name">PANDAGWAN</p>
+          <span class="brand-note">PROJECT ATLAS / PERSONAL AI WORKS</span>
+        </div>
+      </div>
+      <div class="top-status"><span class="status-light" aria-hidden="true"></span><span>LOCAL ARCHIVE · 09 SLOTS</span></div>
+    </header>
+
+    <section class="intro" aria-labelledby="page-title">
+      <div>
+        <p class="eyebrow">A SMALL UNIVERSE OF IDEAS</p>
+        <h1 id="page-title">项目展厅</h1>
+      </div>
+      <p class="intro-copy">每一个图标都是一个入口。选中左侧项目，右侧 HUD 会展开它的 <b>简介、当前状态与项目记录</b>；尚未提供资料的项目先保留展位。</p>
+    </section>
+
+    <main class="workspace">
+      <section class="catalog" aria-labelledby="catalog-title">
+        <div class="section-head">
+          <h2 id="catalog-title">SELECT A PROJECT / 项目索引</h2>
+          <span>01—09</span>
+        </div>
+        <div class="project-grid" role="list" aria-label="PANDAGWAN 项目列表">
+          <button class="project" type="button" role="listitem" data-project="mc" aria-pressed="false" style="--tone:#d6ff83" aria-label="查看MC 英语口语课堂">
+            <span class="project-top"><span>01</span><i class="project-dot"></i></span>
+            <span class="icon-wrap" aria-hidden="true">
+              <svg viewBox="0 0 72 72" fill="none">
+                <path d="M9 49 36 62l27-13V21L36 9 9 21v28Z" fill="#1a2a24" stroke="currentColor" stroke-width="1.5"/>
+                <path d="m9 21 27 13 27-13M36 34v28" stroke="currentColor" stroke-width="1.3" opacity=".75"/>
+                <path d="M19 29h21v13H19z" fill="#d6ff83" fill-opacity=".18" stroke="currentColor" stroke-width="1.2"/>
+                <path d="M23 35h13m-13 4h8" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/>
+                <path d="M45 34c0-4 3-7 7-7s7 3 7 7v10H45V34Z" fill="#8be7dc" fill-opacity=".3" stroke="#8be7dc" stroke-width="1.2"/>
+                <circle cx="49" cy="35" r="1" fill="currentColor"/><circle cx="55" cy="35" r="1" fill="currentColor"/>
+                <path d="M49 40c2 2 4 2 6 0" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+                <path d="M29 49h14m-7-2v8" stroke="#e9f1e3" stroke-width="1.2" stroke-linecap="round"/>
+                <path d="M12 15h7m-3.5-3.5v7" stroke="#fff" stroke-width="1.2" opacity=".55"/>
+              </svg>
+            </span>
+            <span><span class="project-name">MC 英语口语课堂</span><span class="project-kind">IN DEVELOPMENT</span></span>
+          </button>
+
+          <button class="project" type="button" role="listitem" data-project="simbox" aria-pressed="false" style="--tone:#91d5bd" aria-label="查看拟态之盒">
+            <span class="project-top"><span>02</span><i class="project-dot"></i></span>
+            <span class="icon-wrap" aria-hidden="true">
+              <svg viewBox="0 0 72 72" fill="none">
+                <path d="M9 48 36 62l27-14-27-14L9 48Z" fill="#173027" stroke="currentColor" stroke-width="1.4"/>
+                <path d="m15 44 21-11 21 11" stroke="currentColor" stroke-width="1" opacity=".65"/>
+                <path d="M18 41V27l10-6 10 6v15M39 42V23l10-7 10 7v18" fill="#20392f" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
+                <path d="M23 30h4v5h-4zm18 0h4v5h-4zm9-5h4v5h-4z" fill="#d6ff83" fill-opacity=".67"/>
+                <path d="M29 48c0-4 3-7 7-7s7 3 7 7v7H29v-7Z" fill="#c6876d" stroke="#f1e1c9" stroke-width="1"/>
+                <circle cx="33" cy="47" r="1" fill="#171b17"/><circle cx="39" cy="47" r="1" fill="#171b17"/>
+                <path d="M33 51c2 1.5 4 1.5 6 0" stroke="#171b17" stroke-width="1" stroke-linecap="round"/>
+                <path d="M16 19c3-4 7-5 11-3m28 0c3 0 5 2 6 4" stroke="#d6ff83" stroke-width="1.2" stroke-linecap="round"/>
+                <circle cx="14" cy="31" r="2" fill="#d6ff83"/><circle cx="59" cy="35" r="2" fill="#8be7dc"/>
+              </svg>
+            </span>
+            <span><span class="project-name">拟态之盒</span><span class="project-kind">MICRO WORLD</span></span>
+          </button>
+
+          <button class="project" type="button" role="listitem" data-project="cat" aria-pressed="false" style="--tone:#ffbf7b" aria-label="查看小猫项目">
+            <span class="project-top"><span>03</span><i class="project-dot"></i></span>
+            <span class="icon-wrap" aria-hidden="true"></span>
+            <span><span class="project-name">小猫项目</span><span class="project-kind">DESKTOP PET</span></span>
+          </button>
+
+          <button class="project" type="button" role="listitem" data-project="liuyao" aria-pressed="false" style="--tone:#b7a4ed" aria-label="查看六爻">
+            <span class="project-top"><span>04</span><i class="project-dot"></i></span>
+            <span class="icon-wrap" aria-hidden="true"></span>
+            <span><span class="project-name">六爻</span><span class="project-kind">PERSONAL TOOL</span></span>
+          </button>
+
+          <button class="project" type="button" role="listitem" data-project="koala" aria-pressed="false" style="--tone:#d7b4ee" aria-label="查看灰袋袋今天也没办法">
+            <span class="project-top"><span>05</span><i class="project-dot"></i></span>
+            <span class="icon-wrap" aria-hidden="true">
+              <svg viewBox="0 0 72 72" fill="none">
+                <circle cx="18" cy="28" r="12" fill="#8d9295" stroke="#efe8dc" stroke-width="1.4"/>
+                <circle cx="54" cy="28" r="12" fill="#8d9295" stroke="#efe8dc" stroke-width="1.4"/>
+                <circle cx="18" cy="28" r="6" fill="#d8b2be"/><circle cx="54" cy="28" r="6" fill="#d8b2be"/>
+                <path d="M16 42c0-12 9-20 20-20s20 8 20 20-8 20-20 20-20-8-20-20Z" fill="#aeb1b2" stroke="#f2ece0" stroke-width="1.5"/>
+                <ellipse cx="29" cy="41" rx="2.2" ry="3" fill="#242627"/><ellipse cx="43" cy="41" rx="2.2" ry="3" fill="#242627"/>
+                <path d="M33 47c0-3 6-3 6 0v4h-6v-4Z" fill="#303235"/>
+                <path d="M31 54c3-2 7-2 10 0" stroke="#4a4c4d" stroke-width="1.2" stroke-linecap="round"/>
+                <path d="M17 56 9 62m46-6 8 6" stroke="#d6ff83" stroke-width="2" stroke-linecap="round"/>
+                <path d="m50 15 2-4m7 9 4-2" stroke="#d7b4ee" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+            </span>
+            <span><span class="project-name">灰袋袋今天也没办法</span><span class="project-kind">CHARACTER SERIES</span></span>
+          </button>
+
+          <button class="project" type="button" role="listitem" data-project="xuejiu" aria-pressed="false" style="--tone:#a7c8ff" aria-label="查看学究">
+            <span class="project-top"><span>06</span><i class="project-dot"></i></span>
+            <span class="icon-wrap" aria-hidden="true">
+              <svg viewBox="0 0 72 72" fill="none">
+                <path d="M10 19c10-4 18-2 26 4v35c-8-6-16-8-26-4V19Zm52 0c-10-4-18-2-26 4v35c8-6 16-8 26-4V19Z" fill="#1e2639" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+                <path d="M17 27c5-1 10 0 14 3m-14 4c5-1 10 0 14 3m27-10c-5-1-10 0-14 3m14 4c-5-1-10 0-14 3" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity=".75"/>
+                <path d="m36 11 2.4 6.6 7.1.3-5.5 4.4 1.9 6.7-5.9-3.8-5.9 3.8 1.9-6.7-5.5-4.4 7.1-.3L36 11Z" fill="#d6ff83" stroke="#182118" stroke-width=".8"/>
+                <circle cx="12" cy="13" r="1.5" fill="currentColor"/><circle cx="60" cy="12" r="1.5" fill="currentColor"/>
+                <path d="M36 31v28" stroke="#d6ff83" stroke-width="1" stroke-dasharray="2 3" opacity=".8"/>
+              </svg>
+            </span>
+            <span><span class="project-name">学究</span><span class="project-kind">CONCEPT / EXPLORATION</span></span>
+          </button>
+
+          <button class="project" type="button" role="listitem" data-project="ledger" aria-pressed="false" style="--tone:#eccb79" aria-label="查看微信台账">
+            <span class="project-top"><span>07</span><i class="project-dot"></i></span>
+            <span class="icon-wrap" aria-hidden="true">
+              <svg viewBox="0 0 72 72" fill="none">
+                <path d="M20 11h30l7 7v43H20V11Z" fill="#28231a" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+                <path d="M50 11v8h7" stroke="currentColor" stroke-width="1.2"/>
+                <path d="M27 28h22M27 35h22M27 42h9" stroke="#f3e5bb" stroke-width="1.4" stroke-linecap="round" opacity=".65"/>
+                <circle cx="45" cy="50" r="9" fill="#eccb79" fill-opacity=".23" stroke="currentColor" stroke-width="1.4"/>
+                <path d="M46.8 45.5c-.8-.8-2.7-.7-3.4.4-1.1 1.7 1.1 2.7 2.7 3.4 1.9.9 2.3 2.6 1 3.7-1 .8-3 .7-4-.2m2.5-9v12" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+                <path d="m14 25 3 3 5-6M14 38l3 3 5-6" stroke="#91d5bd" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+            <span><span class="project-name">微信台账</span><span class="project-kind">PERSONAL TOOL</span></span>
+          </button>
+
+          <button class="project" type="button" role="listitem" data-project="meal" aria-pressed="false" style="--tone:#ffad87" aria-label="查看家庭点餐系统">
+            <span class="project-top"><span>08</span><i class="project-dot"></i></span>
+            <span class="icon-wrap" aria-hidden="true">
+              <svg viewBox="0 0 72 72" fill="none">
+                <path d="m11 34 25-20 25 20M17 31v26h38V31" fill="#38241d" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+                <path d="M27 57V42h18v15" stroke="currentColor" stroke-width="1.4"/>
+                <circle cx="36" cy="35" r="8" fill="#ffad87" fill-opacity=".2" stroke="currentColor" stroke-width="1.2"/>
+                <path d="M36 29v12m-5-6h10" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+                <path d="M10 61h52" stroke="#ffad87" stroke-width="1.2" stroke-linecap="round" opacity=".6"/>
+              </svg>
+            </span>
+            <span><span class="project-name">家庭点餐系统</span><span class="project-kind">AWAITING MATERIALS</span></span>
+          </button>
+
+          <button class="project" type="button" role="listitem" data-project="workflow" aria-pressed="false" style="--tone:#b7a4ed" aria-label="查看工作流">
+            <span class="project-top"><span>09</span><i class="project-dot"></i></span>
+            <span class="icon-wrap" aria-hidden="true">
+              <svg viewBox="0 0 72 72" fill="none">
+                <path d="M16 21h17m6 0h17M16 51h17m6 0h17M22 27v18m28-18v18" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-dasharray="2.5 3"/>
+                <rect x="8" y="14" width="16" height="14" rx="4" fill="#272239" stroke="currentColor" stroke-width="1.4"/>
+                <rect x="48" y="14" width="16" height="14" rx="4" fill="#272239" stroke="currentColor" stroke-width="1.4"/>
+                <rect x="8" y="44" width="16" height="14" rx="4" fill="#272239" stroke="currentColor" stroke-width="1.4"/>
+                <rect x="48" y="44" width="16" height="14" rx="4" fill="#272239" stroke="currentColor" stroke-width="1.4"/>
+                <circle cx="16" cy="21" r="2" fill="#d6ff83"/><circle cx="56" cy="21" r="2" fill="#d6ff83"/>
+                <path d="m31 33 5 5 5-5m-5-8v13" stroke="#d6ff83" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="36" cy="51" r="5" fill="#b7a4ed" fill-opacity=".36" stroke="currentColor" stroke-width="1.2"/>
+              </svg>
+            </span>
+            <span><span class="project-name">工作流</span><span class="project-kind">WORKFLOW STUDY</span></span>
+          </button>
+        </div>
+        <div class="catalog-foot"><span><strong>选择图标</strong> 展开项目档案</span><span>CREATED WITH CURIOSITY · 2026</span></div>
+      </section>
+
+      <aside class="hud" aria-label="项目详细信息" aria-live="polite" aria-hidden="true">
+        <header class="hud-header">
+          <span class="hud-code" id="hud-code">PROJECT FILE / 01</span>
+          <span class="hud-state" id="hud-state">IN DEVELOPMENT</span>
+        </header>
+        <div class="hud-main" id="hud-main">
+          <p class="hud-kicker" id="hud-kicker">EDUCATION / MINECRAFT</p>
+          <h2 class="hud-title" id="hud-title">MC 英语口语课堂</h2>
+          <p class="hud-subtitle" id="hud-subtitle">Minecraft AI Teacher / AI Student</p>
+          <p class="hud-description" id="hud-description"></p>
+          <div class="hud-divider">PROJECT SIGNAL</div>
+          <div class="hud-tags" id="hud-tags"></div>
+          <div class="hud-note"><span class="hud-note-mark">↳</span><span id="hud-note"></span></div>
+          <div class="hud-actions">
+            <a class="entry-link" id="entry-link" aria-disabled="true">打开项目记录 <span aria-hidden="true">↗</span></a>
+            <span class="entry-hint" id="entry-hint">PUBLIC LINK PENDING</span>
+          </div>
+          <div class="hud-meta">
+            <div class="meta-cell"><span class="meta-label">PROJECT TYPE</span><span class="meta-value" id="meta-type">AI 教育 / 游戏化口语</span></div>
+            <div class="meta-cell"><span class="meta-label">RECORD</span><span class="meta-value" id="meta-record">项目需求与运行记录</span></div>
+          </div>
+        </div>
+        <div class="bottomline"><span>PANDAGWAN / <b>WORK ARCHIVE</b></span><span id="hud-index">01 OF 09</span></div>
+      </aside>
+    </main>
+
+    <nav class="carousel-nav" aria-label="切换项目">
+      <button type="button" id="previous-project" aria-label="上一个项目">‹</button>
+      <span id="carousel-count" aria-live="polite">— / 09</span>
+      <button type="button" id="next-project" aria-label="下一个项目">›</button>
+    </nav>
+
+    <footer class="bottomline">
+      <p class="footer-brand">PANDAGWAN</p>
+      <div class="footer-nav">AI PROJECTS <span>·</span> SMALL IDEAS, REAL WORLDS</div>
+      <a class="footer-github" href="https://github.com/panda0611" target="_blank" rel="noopener noreferrer" aria-label="访问 PANDAGWAN 的 GitHub 个人主页">
+        <span>GITHUB</span><span class="footer-github-id">github.com/panda0611</span><span class="footer-github-arrow" aria-hidden="true">↗</span>
+      </a>
+    </footer>
+    <span class="edition" aria-hidden="true">PROJECT ARCHIVE / 01—09</span>
+  </div>
+
+  <script>
+    const projects = [
+      {
+        id: "mc",
+        number: "01",
+        state: "IN DEVELOPMENT",
+        kicker: "EDUCATION / MINECRAFT",
+        subtitle: "AI 教育 · 游戏化口语",
+        tags: ["真实任务","英语对话","Minecraft"],
+        note: "展示图为用户提供的 MC 英语口语课堂游戏截图。",
+        type: "AI 教育",
+        record: "游戏实机截图",
+        image: "pandagwan-assets/project-mc-screenshot.png",
+        href: "",
+        title: "MC 英语口语课堂",
+        description: "在《我的世界》任务里练习真实对话",
+        imageAlt: "MC 英语口语课堂项目预览",
+        linkText: "公开链接待补",
+        hint: "PUBLIC LINK PENDING"
+      },
+      {
+        id: "simbox",
+        number: "02",
+        state: "MICRO WORLD",
+        kicker: "3D / MINIATURE WORLD",
+        subtitle: "SimBox · 微缩世界工作台",
+        tags: ["3D建模","箱庭","微观世界"],
+        note: "展示图来自拟态之盒本地运行截图。",
+        type: "3D 创作 / 微缩世界",
+        record: "拟态之盒场景工作台",
+        image: "pandagwan-assets/project-simbox.png",
+        title: "拟态之盒",
+        description: "3D建模、箱庭、微观世界",
+        imageAlt: "拟态之盒项目预览",
+        href: "",
+        linkText: "项目入口待补",
+        hint: "WAITING FOR SOURCE"
+      },
+      {
+        id: "cat",
+        number: "03",
+        state: "DESKTOP PET",
+        kicker: "COMPANION / DESKTOP",
+        subtitle: "灯尾猫 Lumo",
+        tags: ["桌面宠物","小猫","日常陪伴"],
+        note: "展示图为桌面宠物项目现有橘猫角色素材。",
+        type: "桌面宠物",
+        record: "灯尾猫 Lumo 项目",
+        image: "pandagwan-assets/project-cat.png",
+        title: "小猫项目",
+        description: "桌面宠物",
+        imageAlt: "小猫项目项目预览",
+        href: "",
+        linkText: "项目入口待补",
+        hint: "WAITING FOR SOURCE"
+      },
+      {
+        id: "liuyao",
+        number: "04",
+        state: "PERSONAL TOOL",
+        kicker: "LIUYAO / DECISION",
+        subtitle: "六爻起卦",
+        tags: ["六爻","预测","定夺"],
+        note: "展示图为用户提供的六爻起卦截图，可直接打开线上页面。",
+        type: "预测与定夺",
+        record: "六爻起卦页面截图",
+        image: "pandagwan-assets/project-liuyao-screenshot.png",
+        href: "https://panda0611.github.io/Six-Line/",
+        title: "六爻",
+        description: "预测与定夺",
+        imageAlt: "六爻起卦页面截图",
+        linkText: "打开六爻",
+        hint: "LIVE · GITHUB PAGES"
+      },
+      {
+        id: "koala",
+        number: "05",
+        state: "CHARACTER SERIES",
+        kicker: "CHARACTER IP / STICKER",
+        subtitle: "灰考拉 · 无字表情系列",
+        tags: ["灰考拉","无字日常","表情"],
+        note: "用动作和神态表达日常情绪。",
+        type: "数字角色 / 表情",
+        record: "角色设定与场景样片",
+        image: "pandagwan-assets/project-koala.png",
+        href: "",
+        title: "灰袋袋今天也没办法",
+        description: "一只灰考拉的无字日常与表情",
+        imageAlt: "灰袋袋今天也没办法项目预览",
+        linkText: "公开链接待补",
+        hint: "PUBLIC LINK PENDING"
+      },
+      {
+        id: "xuejiu",
+        number: "06",
+        state: "CONCEPT / EXPLORATION",
+        kicker: "LEARNING SPACE / ARTS",
+        subtitle: "主题探索 · 跨学科学习",
+        tags: ["主题式学习","跨学科","创造"],
+        note: "展示图为用户提供的学究都江堰跨学科探索界面截图。",
+        type: "教育产品 / 跨学科学习",
+        record: "都江堰主题探索界面截图",
+        image: "pandagwan-assets/project-xuejiu-screenshot.png",
+        href: "",
+        title: "学究",
+        description: "从主题出发探索跨学科学习与创造",
+        imageAlt: "学究都江堰跨学科探索界面",
+        linkText: "公开链接待补",
+        hint: "PUBLIC LINK PENDING"
+      },
+      {
+        id: "ledger",
+        number: "07",
+        state: "PERSONAL TOOL",
+        kicker: "PERSONAL / WECHAT LEDGER",
+        subtitle: "个人记录工具",
+        tags: ["个人微信台账"],
+        note: "展示图为用户提供的个人微信台账总览截图。",
+        type: "个人微信台账",
+        record: "个人台账总览界面截图",
+        image: "pandagwan-assets/project-ledger-screenshot.png",
+        href: "",
+        title: "微信台账",
+        description: "个人微信台账",
+        imageAlt: "个人微信台账总览界面",
+        linkText: "公开链接待补",
+        hint: "PUBLIC LINK PENDING"
+      },
+      {
+        id: "meal",
+        number: "08",
+        state: "PROJECT SCREENSHOT",
+        kicker: "FAMILY / ORDERING",
+        subtitle: "家庭日常小工具",
+        tags: ["家庭点餐","菜单界面"],
+        note: "展示图为用户提供的家庭点餐菜单截图；项目入口仍待补。",
+        type: "家庭工具",
+        record: "手机端菜单截图",
+        image: "pandagwan-assets/project-meal-screenshot.png",
+        title: "家庭点餐系统",
+        description: "让家庭点餐更轻松的小工具，项目资料待补",
+        imageAlt: "家庭点餐手机端菜单截图",
+        href: "",
+        linkText: "项目入口待补",
+        hint: "WAITING FOR SOURCE"
+      },
+      {
+        id: "workflow",
+        number: "09",
+        state: "WORKFLOW STUDY",
+        kicker: "WORKFLOW / CREATION",
+        subtitle: "调研 · 图文 · 建模",
+        tags: ["选品调研","小红书图文流","3D建模"],
+        note: "当前展示选品调研流程图；小红书图文流与 3D 建模素材待补。",
+        type: "调研与创作工作流",
+        record: "选品调研流程图",
+        image: "pandagwan-assets/project-workflow.png",
+        title: "工作流",
+        description: "选品调研；小红书图文流；3D建模",
+        imageAlt: "工作流项目预览",
+        href: "",
+        linkText: "项目入口待补",
+        hint: "WAITING FOR SOURCE"
+      }
+    ];
+
+    const buttons = Array.from(document.querySelectorAll(".project"));
+    const hudMain = document.getElementById("hud-main");
+    const projectGrid = document.querySelector(".project-grid");
+    const workspace = document.querySelector(".workspace");
+    const hud = document.querySelector(".hud");
+    const carouselCount = document.getElementById("carousel-count");
+    let selectedId = null;
+
+    const iconAssets = {
+      mc: "pandagwan-assets/icon-mc.png",
+      simbox: "pandagwan-assets/icon-sandbox.png",
+      cat: "pandagwan-assets/icon-cat-pixel.png",
+      liuyao: "pandagwan-assets/icon-liuyao-pixel.png",
+      koala: "pandagwan-assets/icon-koala.png",
+      xuejiu: "pandagwan-assets/icon-xuejiu.png",
+      ledger: "pandagwan-assets/icon-ledger.png",
+      meal: "pandagwan-assets/icon-meal.png"
+    };
+    const workflowIcon = `<svg class="pixel-workflow" viewBox="0 0 128 128" fill="none" aria-hidden="true">
+      <g shape-rendering="crispEdges">
+        <rect x="10" y="27" width="44" height="39" rx="5" fill="#e9e3ff" stroke="#251c4a" stroke-width="4"/>
+        <rect x="18" y="36" width="28" height="17" fill="#28205a" stroke="#7f6bdb" stroke-width="3"/>
+        <rect x="24" y="41" width="5" height="5" fill="#8df1d0"/><rect x="35" y="41" width="5" height="5" fill="#f7cd7c"/>
+        <rect x="27" y="16" width="10" height="11" fill="#b9a4ee" stroke="#251c4a" stroke-width="4"/>
+        <rect x="16" y="70" width="12" height="8" fill="#b9a4ee" stroke="#251c4a" stroke-width="4"/>
+        <rect x="36" y="70" width="12" height="8" fill="#b9a4ee" stroke="#251c4a" stroke-width="4"/>
+        <path d="M59 46h13V31h12M72 46v22h12" stroke="#8df1d0" stroke-width="5"/>
+        <rect x="84" y="20" width="29" height="22" fill="#9eb9ff" stroke="#251c4a" stroke-width="4"/>
+        <rect x="84" y="57" width="29" height="22" fill="#f5c979" stroke="#251c4a" stroke-width="4"/>
+        <rect x="84" y="93" width="29" height="22" fill="#ef9db8" stroke="#251c4a" stroke-width="4"/>
+        <path d="M91 29h14M91 66h14M91 102h14" stroke="#251c4a" stroke-width="4"/>
+        <path d="M75 68h5v36h4" stroke="#8df1d0" stroke-width="5"/>
+      </g>
+    </svg>`;
+    const liuyaoIcon = `<svg class="pixel-workflow" viewBox="0 0 128 128" aria-hidden="true"><g shape-rendering="crispEdges"><rect x="20" y="15" width="88" height="98" rx="10" fill="#a68ddf" stroke="#251c4a" stroke-width="4"/><path d="M64 30a34 34 0 1 0 0 68 17 17 0 0 0 0-34 17 17 0 0 1 0-34Z" fill="#f8f0dc"/><path d="M64 30a34 34 0 0 1 0 68 17 17 0 0 0 0-34 17 17 0 0 1 0-34Z" fill="#312645"/><rect x="61" y="43" width="6" height="6" fill="#312645"/><rect x="61" y="79" width="6" height="6" fill="#f8f0dc"/></g></svg>`;
+    const totalProjects = String(projects.length).padStart(2, "0");
+    const projectById = new Map(projects.map((project) => [project.id, project]));
+    buttons.forEach((button) => {
+      const item = projectById.get(button.dataset.project);
+      const wrap = button.querySelector(".icon-wrap");
+      if (!item || !wrap) return;
+      wrap.replaceChildren();
+      if (iconAssets[item.id]) {
+        const icon = document.createElement("img");
+        icon.className = "pixel-icon";
+        icon.src = iconAssets[item.id];
+        icon.alt = "";
+        wrap.append(icon);
+      } else {
+        wrap.insertAdjacentHTML("beforeend", workflowIcon);
+      }
+      const preview = document.createElement("span");
+      preview.className = "project-preview" + (item.image ? "" : " is-empty");
+      preview.setAttribute("aria-hidden", "true");
+      if (item.image) {
+        const image = document.createElement("img");
+        image.src = item.image;
+        image.alt = item.imageAlt || "";
+        preview.append(image);
+      }
+      wrap.append(preview);
+    });
+
+    function positionCarousel() {
+      const selectedIndex = buttons.findIndex((button) => button.dataset.project === selectedId);
+      if (selectedIndex < 0) {
+        projectGrid.classList.remove("is-selected");
+        buttons.forEach((button) => { button.style.removeProperty("--slot-x"); button.style.removeProperty("--slot-scale"); button.style.removeProperty("--slot-opacity"); });
+        return;
+      }
+      projectGrid.classList.add("is-selected");
+      const width = window.innerWidth;
+      buttons.forEach((button, index) => {
+        let distance = index - selectedIndex;
+        const half = Math.floor(buttons.length / 2);
+        if (distance > half) distance -= buttons.length;
+        if (distance < -half) distance += buttons.length;
+        const x = window.matchMedia("(max-width: 760px)").matches ? 0 : width * (-.135 + distance * .145);
+        const magnitude = Math.abs(distance);
+        button.style.setProperty("--slot-x", `${x}px`);
+        button.style.setProperty("--slot-scale", distance === 0 ? "1" : String(Math.max(.3, .74 - magnitude * .12)));
+        button.style.setProperty("--slot-opacity", distance === 0 ? "1" : String(Math.max(.055, .48 - magnitude * .12)));
+      });
+    }
+
+    function clearSelection() {
+      selectedId = null;
+      workspace.removeAttribute("data-selected");
+      buttons.forEach((button) => button.setAttribute("aria-pressed", "false"));
+      hud.setAttribute("aria-hidden", "true");
+      carouselCount.textContent = "— / " + totalProjects;
+      positionCarousel();
+    }
+
+    function selectProject(id) {
+      const item = projects.find((project) => project.id === id);
+      if (!item) return;
+      selectedId = id;
+      workspace.dataset.selected = id;
+      buttons.forEach((button) => button.setAttribute("aria-pressed", String(button.dataset.project === id)));
+      hud.setAttribute("aria-hidden", "false");
+      carouselCount.textContent = item.number + " / " + totalProjects;
+      positionCarousel();
+      hudMain.classList.remove("is-changing");
+      void hudMain.offsetWidth;
+      hudMain.classList.add("is-changing");
+      document.getElementById("hud-code").textContent = "PROJECT FILE / " + item.number;
+      document.getElementById("hud-state").textContent = item.state;
+      document.getElementById("hud-kicker").textContent = item.kicker;
+      document.getElementById("hud-title").textContent = item.title;
+      document.getElementById("hud-subtitle").textContent = item.subtitle;
+      document.getElementById("hud-description").textContent = item.description;
+      document.getElementById("hud-note").textContent = item.note;
+      document.getElementById("meta-type").textContent = item.type;
+      document.getElementById("meta-record").textContent = item.record;
+      document.getElementById("hud-index").textContent = item.number + " OF " + totalProjects;
+      document.getElementById("entry-hint").textContent = item.hint;
+      const tags = document.getElementById("hud-tags");
+      tags.replaceChildren(...item.tags.map((tag) => {
+        const node = document.createElement("span");
+        node.className = "hud-tag";
+        node.textContent = tag;
+        return node;
+      }));
+      const link = document.getElementById("entry-link");
+      if (item.href) {
+        link.href = item.href;
+        link.textContent = item.linkText + " ";
+        const arrow = document.createElement("span");
+        arrow.setAttribute("aria-hidden", "true");
+        arrow.textContent = "↗";
+        link.append(arrow);
+        link.className = "entry-link";
+        link.removeAttribute("aria-disabled");
+        link.tabIndex = 0;
+      } else {
+        link.removeAttribute("href");
+        link.textContent = item.linkText;
+        link.className = "entry-empty";
+        link.setAttribute("aria-disabled", "true");
+        link.tabIndex = -1;
+      }
+    }
+
+    buttons.forEach((button) => button.addEventListener("click", () => selectProject(button.dataset.project)));
+    document.getElementById("previous-project").addEventListener("click", () => stepProject(-1));
+    document.getElementById("next-project").addEventListener("click", () => stepProject(1));
+    function stepProject(delta, moveFocus = false) {
+      const activeIndex = buttons.findIndex((button) => button.dataset.project === selectedId);
+      const nextIndex = activeIndex < 0 ? (delta > 0 ? 0 : buttons.length - 1) : (activeIndex + delta + buttons.length) % buttons.length;
+      if (moveFocus) buttons[nextIndex].focus({ preventScroll: true });
+      selectProject(buttons[nextIndex].dataset.project);
+    }
+    workspace.addEventListener("click", (event) => {
+      if (selectedId && !event.target.closest(".project, .hud")) clearSelection();
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") { clearSelection(); return; }
+      if (!["ArrowLeft", "ArrowRight"].includes(event.key)) return;
+      if (event.target instanceof HTMLAnchorElement) return;
+      event.preventDefault();
+      stepProject(event.key === "ArrowRight" ? 1 : -1, true);
+    });
+    window.addEventListener("resize", positionCarousel);
+
+    const soundToggle = document.getElementById("sound-toggle");
+    let audioContext = null;
+    let masterGain = null;
+    let tones = [];
+    function stopAmbient() {
+      if (!audioContext || !masterGain) return;
+      const context = audioContext;
+      masterGain.gain.setTargetAtTime(0, context.currentTime, 0.12);
+      tones.forEach((tone) => { try { tone.stop(context.currentTime + 0.45); } catch (_) {} });
+      tones = [];
+      audioContext = null;
+      masterGain = null;
+      window.setTimeout(() => context.close().catch(() => {}), 600);
+    }
+    async function startAmbient() {
+      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContextClass) return false;
+      audioContext = new AudioContextClass();
+      await audioContext.resume();
+      masterGain = audioContext.createGain();
+      masterGain.gain.setValueAtTime(0, audioContext.currentTime);
+      masterGain.gain.linearRampToValueAtTime(0.012, audioContext.currentTime + 0.8);
+      masterGain.connect(audioContext.destination);
+      [174.61, 261.63].forEach((frequency, index) => {
+        const oscillator = audioContext.createOscillator();
+        const voiceGain = audioContext.createGain();
+        oscillator.type = index ? "sine" : "triangle";
+        oscillator.frequency.value = frequency;
+        voiceGain.gain.value = index ? 0.34 : 0.52;
+        oscillator.connect(voiceGain);
+        voiceGain.connect(masterGain);
+        oscillator.start();
+        tones.push(oscillator);
+      });
+      return true;
+    }
+    soundToggle.addEventListener("click", async () => {
+      const turnOn = soundToggle.getAttribute("aria-pressed") !== "true";
+      if (turnOn) { if (!await startAmbient()) return; } else stopAmbient();
+      soundToggle.setAttribute("aria-pressed", String(turnOn));
+      soundToggle.setAttribute("aria-label", turnOn ? "关闭环境音" : "打开环境音");
+      soundToggle.title = "环境音：" + (turnOn ? "开启" : "关闭");
+    });
+    window.addEventListener("pagehide", stopAmbient, { once: true });
+  </script>
+</body>
+</html>
