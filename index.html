@@ -490,7 +490,16 @@
       transition: color 180ms ease, border-color 180ms ease, background 180ms ease;
     }
     .carousel-nav button:hover { color: #fff; border-color: rgba(136,253,161,.52); background: rgba(136,253,161,.07); }
-    #carousel-count { display: grid; place-items: center; min-width: 104px; font-size: 14px; font-weight: 650; line-height: 1; text-align: center; }
+    #carousel-count { display: grid; place-items: center; min-width: 104px; color: #a8ffe0; font-size: 14px; font-weight: 650; line-height: 1; text-align: center; }
+    @supports ((background-clip: text) or (-webkit-background-clip: text)) {
+      #carousel-count {
+        background-image: linear-gradient(90deg, #a8ffe0, #9edbff, #c5b2ff, #ffb5d7, #ffe6a3, #a8ffe0);
+        background-size: 200% 100%; background-clip: text; -webkit-background-clip: text; color: transparent;
+        animation: brand-spectrum 6s linear infinite;
+      }
+    }
+    @keyframes brand-spectrum { from { background-position: 0% 50%; } to { background-position: 200% 50%; } }
+    @media (prefers-reduced-motion: reduce) { #carousel-count { animation: none; } }
     footer.bottomline { bottom: 19px; gap: 5px; }
     .footer-brand { font-size: 10px; }
     .footer-nav { color: #41494b; }
